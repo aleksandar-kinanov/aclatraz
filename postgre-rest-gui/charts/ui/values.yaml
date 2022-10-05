@@ -1,0 +1,29 @@
+replicaCount: 1
+containers:
+  gui:
+    image:
+      repository: stuff
+      pullPolicy: IfNotPresent
+      tag: 1.0.0
+
+  postgrest:
+    image:
+      repository: postgrest/postgrest
+      pullPolicy: IfNotPresent
+    port: 3000
+
+extraVolumes:
+  - name: config-volume
+    configMap:
+      name: gui-configmap
+
+extraVolumeMounts:
+  - name: config-volume
+    mountPath: /opt/postgui/src/data/config.json
+    subPath: config.json
+
+configMap:
+  name: ui-configmap
+
+service:
+  port: 8771

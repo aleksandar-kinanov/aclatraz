@@ -1,0 +1,37 @@
+apiVersion: v1
+data:
+  config.json: |
+    {
+      "databases": [
+        {
+          "title": "dvdrental",
+          "url": "http://localhost:3000/s",
+          "publicDbAcessType": "read",
+          "foreignKeySearch": false,
+          "primaryKeyFunction": false,
+          "regexSupport": false
+        }
+      ],
+      "logoUrl": null,
+      "seq_column_names": [
+        "alignment_sequence",
+        "nucleotide_sequence",
+        "aminoacid_sequence",
+        "nucleotide_seq",
+        "amino_acid_seq",
+        "nuc_seq",
+        "aa_seq",
+        "dna_seq",
+        "protein_seq",
+        "prot_seq",
+        "n_seq",
+        "p_seq",
+        "a_seq",
+        "seq",
+        "sequence"
+      ],
+      "errorMsg": "ERROR"
+    }
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.name }}

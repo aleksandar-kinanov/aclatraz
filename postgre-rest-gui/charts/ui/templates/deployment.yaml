@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "postgre-rest-gui.fullname" . }}
+  labels:
+    {{- include "postgre-rest-gui.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "postgre-rest-gui.selectorLabels" . | nindent 8 }}
+  template:
+    metadata:
+      labels:
+      {{- include "postgre-rest-gui.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: postgui
+          image:  "{{ .Values.containers.gui.image.repository }}:{{ .Values.containers.gui.image.tag }}" # Sets Image
+          imagePullPolicy: {{ .Values.containers.gui.image.pullPolicy  }}
+          ports:
+            - containerPort: {{ .Values.containers.service.port }}
+          volumeMounts:
+          {{- range .Values.extraVolumeMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+          {{- end }}
+        - name: postgrest
+          image: {{ .Values.containers.postgrest.image.repository }} # Sets Image
+          imagePullPolicy: {{ .Values.containers.postgrest.image.pullPolicy  }}
+          ports:
+            - containerPort: {{ .Values.containers.postgrest.port }}
+          env:
+            - name: PGRST_DB_URI
+              value: "postgres://"
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgresSecretName }}
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.postgresSecretName }}
+                  key: password
+            - name: PGHOST
+              value: {{ .Values.global.psql.endpoint }}
+            - name: PGPORT
+              value: {{ .Values.global.psql.port | quote }}
+            - name: PGDATABASE
+              value: {{ .Values.global.psql.databaseName }}
+            - name: PGRST_DB_ANON_ROLE
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+      volumes:
+      {{- if .Values.extraVolumes  }}
+      {{ toYaml .Values.extraVolumes | trim | nindent 6 }}
+      {{ end }}

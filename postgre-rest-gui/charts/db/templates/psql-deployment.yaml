@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres  # Sets Deployment name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
+  serviceName: postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: pg_db:1.0.0 # Sets Image
+          imagePullPolicy: "Never"
+          ports:
+            - containerPort: {{ .Values.global.psql.port }}  # Exposes container port
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.global.postgresSecretName }}
+                key: username
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.global.postgresSecretName }}
+                key: password
+          - name: POSTGRES_DB
+            value: {{ .Values.global.psql.databaseName }}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-pv-claim
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-pv-claim
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

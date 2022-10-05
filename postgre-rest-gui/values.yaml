@@ -1,0 +1,6 @@
+global:
+  psql:
+    endpoint: psql-svc
+    port: 5432
+    databaseName: dvdrental
+  postgresSecretName: postgres-secret

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "postgre-rest-gui.name" . }}-svc
+spec:
+  selector:
+    {{- include "postgre-rest-gui.selectorLabels" . | nindent 8 }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
