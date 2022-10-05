@@ -15,15 +15,12 @@ containers:
 extraVolumes:
   - name: config-volume
     configMap:
-      name: gui-configmap
+      name: ui-config # Directly related to the configmap object
 
 extraVolumeMounts:
   - name: config-volume
     mountPath: /opt/postgui/src/data/config.json
     subPath: config.json
-
-configMap:
-  name: ui-configmap
 
 service:
   port: 8771

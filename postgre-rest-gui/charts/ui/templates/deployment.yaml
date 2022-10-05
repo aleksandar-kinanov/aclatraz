@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "postgre-rest-gui.fullname" . }}
+  name: {{ include "ui.fullname" . }}
   labels:
-    {{- include "postgre-rest-gui.labels" . | nindent 4 }}
+    {{- include "ui.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "postgre-rest-gui.selectorLabels" . | nindent 8 }}
+      {{- include "ui.selectorLabels" . | nindent 8 }}
   template:
     metadata:
       labels:
-      {{- include "postgre-rest-gui.selectorLabels" . | nindent 8 }}
+      {{- include "ui.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: postgui
           image:  "{{ .Values.containers.gui.image.repository }}:{{ .Values.containers.gui.image.tag }}" # Sets Image
           imagePullPolicy: {{ .Values.containers.gui.image.pullPolicy  }}
           ports:
-            - containerPort: {{ .Values.containers.service.port }}
+            - containerPort: {{ .Values.service.port }}
           volumeMounts:
           {{- range .Values.extraVolumeMounts }}
           - name: {{ .name }}
