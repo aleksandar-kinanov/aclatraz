@@ -35,3 +35,5 @@ data:
 kind: ConfigMap
 metadata:
   name: {{ include "ui.name" . }}-config
+  labels: 
+    {{- include "ui.labels" . | nindent 4 }}

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "postgres-db.fullname" . }}
+  labels:
+    {{- include "postgres-db.selectorLabels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "postgres-db.selectorLabels" . | nindent 8 }}
+  serviceName: postgres
+  template:
+    metadata:
+      labels:
+        {{- include "postgres-db.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "postgres-db.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.global.psql.port }}
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.global.postgresSecretName }}
+                key: username
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.global.postgresSecretName }}
+                key: password
+          - name: POSTGRES_DB
+            value: {{ .Values.global.psql.databaseName }}
+          volumeMounts:
+          {{- range .Values.volumeClaimTemplates }}
+            - mountPath: {{ required "mountPath is required" .mountPath }}
+              name: {{ .name }}
+          {{- end }}
+  volumeClaimTemplates:
+  {{- range .Values.volumeClaimTemplates }}
+  - metadata:
+      name: {{ .name }}
+    spec:
+      accessModes: 
+        - {{ (.spec).accessModes | default list "ReadWriteOnce" | quote }}
+      resources:
+        requests:
+          storage: {{ (.spec).storage | default "1Gi" | quote }} 
+  {{- end }}

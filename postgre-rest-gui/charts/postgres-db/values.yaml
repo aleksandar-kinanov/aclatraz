@@ -1,0 +1,19 @@
+image:
+  repository: pg_db
+  pullPolicy: IfNotPresent
+  tag: 1.0.0
+
+persistentVolume:
+  name: postgres-pv-volume
+  className: local-storage
+  capacity: 5Gi
+  hostPath: "/mnt/data"
+  
+volumeClaimTemplates:
+  - name: postgres-pv-claim
+    mountPath: /var/lib/postgresql/data
+    spec:
+      accessModes: 
+        - "ReadWriteOnce"
+      storage: 1Gi
+      

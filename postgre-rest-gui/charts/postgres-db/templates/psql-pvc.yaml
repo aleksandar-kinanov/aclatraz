@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistentVolume.name }}
+  labels:
+    {{- include "postgres-db.selectorLabels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Values.persistentVolume.className }}
+  capacity:
+    storage: {{ .Values.persistentVolume.capacity }}
+  accessModes:
+    - {{ .Values.persistentVolume.mode | default list "ReadWriteMany" | quote }}
+  hostPath:
+    path: {{ .Values.persistentVolume.hostPath }}
