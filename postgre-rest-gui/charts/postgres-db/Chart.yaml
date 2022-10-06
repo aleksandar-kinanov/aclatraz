@@ -1,6 +1,6 @@
 apiVersion: v2
 name: postgres-db
-description: A Helm chart for Kubernetes
+description: Endpoint Postgres filled with dummy DVD data
 
 # A chart can be either an 'application' or a 'library' chart.
 #

@@ -2,7 +2,7 @@ replicaCount: 1
 containers:
   gui:
     image:
-      repository: stuff
+      repository: post-gui
       pullPolicy: IfNotPresent
       tag: 1.0.0
 
@@ -22,5 +22,10 @@ extraVolumeMounts:
     mountPath: /opt/postgui/src/data/config.json
     subPath: config.json
 
+# Service information for the NodeJS UI part
 service:
   port: 8771
+
+ingress:
+  enforceSsl: true
+  dns: postgui.example.com 

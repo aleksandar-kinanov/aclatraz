@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ui
-description: A Helm chart for Kubernetes
+description: Custom NodeJS UI + PostgREST
 
 # A chart can be either an 'application' or a 'library' chart.
 #
